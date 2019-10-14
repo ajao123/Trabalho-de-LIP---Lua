@@ -5,10 +5,60 @@ local livroComedia = require("entities/livroComedia")
 
 sair = false
 
-
 livros = {}
 categorias = {"aventura", "drama", "comedia"}
-repeat
+
+function printLivro(livro)
+	print("\t Livro - " .. livro.id)
+	print(" Id - " .. livro.id)
+	print(" Titulo - " .. livro.titulo)
+	print(" Categoria - " .. livro.categoria)
+	print(" Valor - " .. livro.valor)
+	print(" Quantidade Em Estoque - " .. livro.quantidade)
+
+	if(livro.status == true) then
+		print(" Status - Ativo")
+	else
+		print(" Status - Inativo")
+	end
+
+	if(livro.categoria == categorias[1]) then
+		if(livro.ilustracoes == true) then
+			print(" Ilustracoes - Sim \n")
+		else
+			print(" Ilustracoes - Nao \n")
+		end
+	else
+		if(livro.categoria == categorias[2]) then
+			if(livro.capaDura == true) then
+				print(" Capa Dura - Sim \n")
+			else
+				print(" Capa Dura - Nao \n")
+			end
+		else
+			if(livro.categoria == categorias[3]) then
+				if(livro.capaBrochura == true) then
+					print(" Capa Brochura - Sim \n")
+				else
+					print(" Capa Brochura - Nao \n")
+				end
+			end
+		end
+
+	end
+end
+
+
+function printLivros()
+
+	for i = 1, #livros, 1 do
+		printLivro(livros[i])
+	end
+
+end
+
+
+function printMenu()
 	print("\n \n \n 1 - Adicionar Livro")
 	print(" 2 - Visualizar Livros")
 	print(" 3 - Visualizar Estoque de livros")
@@ -17,19 +67,16 @@ repeat
 	print(" 6 - Ativar vendas do livro")
 	print(" 7 - Adicionar mais volumes de um livro")
 	print(" 8 - Sair do Sistema\n")
+end
 
-	opcao = io.read()
 
-
-	if(opcao == "1") then
+function addLivro()
 
 		print("\n 1 - Adicionar Livro de Aventura")
 		print(" 2 - Adicionar Livro de Drama")
 		print(" 3 - Adicionar Livro de Comédia\n")
 
 		opcao = io.read()
-
-
 
 			print("\n Digite o titulo do livro:")
 
@@ -98,205 +145,179 @@ repeat
 
 		end
 
+end
+
+
+function visualizarPorCategoria()
+	for j = 1, 3, 1 do
+		print("\t Categoria: " .. categorias[j] .. "\n")
+
+		for i = 1, #livros, 1 do
+
+			if(livros[i].categoria == categorias[j] ) then
+
+				printLivro(livros[i])
+
+			end
+		end
+	end
+end
+
+
+
+function venderLivro()
+
+	print("\n Digite o id do livro desejado:")
+
+	idLivro = tonumber(io.read())
+
+	if(idLivro <= #livros and idLivro > 0) then
+
+		if(livros[idLivro].status == true) then
+
+			if(livros[idLivro].quantidade == 0) then
+				print("\n Livro Esgotado")
+			else
+				livros[idLivro].quantidade = livros[idLivro].quantidade -1
+				print("\n Venda Realizada com Sucesso")
+			end
+
+		else
+
+			print("\n Livro Indisponível para a venda.")
+
+		end
+
+
+	else
+		print("\n Livro não encontrado. Id inválido.")
+	end
+
+end
+
+
+function desativarVendasLivro()
+
+	print("\n Digite o id do livro desejado:\n")
+	idLivro = tonumber(io.read())
+
+	if(idLivro <= #livros and idLivro > 0) then
+
+		if(livros[idLivro].status == true) then
+
+			livros[idLivro].status = false
+			print("\n Livro esta Indisponível para venda. Inativo")
+
+		else
+
+			print("\n Livro ja esta inativo.")
+
+		end
+
+
+	else
+		print("\n Livro não encontrado. Id inválido.")
+	end
+
+end
+
+
+
+function ativarVendasLivro()
+
+	print("\n Digite o id do livro desejado:")
+	idLivro = tonumber(io.read())
+
+	if(idLivro <= #livros and idLivro > 0) then
+
+		if(livros[idLivro].status == false) then
+
+			livros[idLivro].status = true
+			print("\n Livro esta disponível para venda. Ativo")
+
+		else
+
+			print("\n Livro ja esta ativo.")
+
+		end
+
+
+	else
+		print("\n Livro não encontrado. Id inválido.")
+	end
+
+end
+
+
+function adicionarMaisVolumes()
+print("\n Digite o id do livro desejado:")
+	idLivro = tonumber(io.read())
+
+	if(idLivro <= #livros and idLivro > 0) then
+
+		print("\n Digite a quantidade de volumes a ser adicionada:")
+		qtdLivro = tonumber(io.read())
+
+		if(qtdLivro > 0) then
+			livros[idLivro].quantidade = livros[idLivro].quantidade + qtdLivro
+			print("\n Volumes adicionados com sucesso.")
+		else
+			print("\n Quantidade invalida.")
+		end
+
+
+	else
+		print("\n Livro não encontrado. Id inválido.")
+	end
+end
+
+
+repeat
+
+	printMenu()
+
+	opcao = io.read()
+
+
+	if(opcao == "1") then
+
+		addLivro()
+
 	else
 
 			if(opcao == "2") then
 
-				for i = 1, #livros, 1 do
-
-						print("\t Livro - ".. livros[i].id)
-						print(" Id - " .. livros[i].id)
-						print(" Titulo - " .. livros[i].titulo)
-						print(" Categoria - " .. livros[i].categoria)
-						print(" Valor - " .. livros[i].valor)
-						print(" Quantidade Em Estoque - " .. livros[i].quantidade)
-						if(livros[i].status == true) then
-							print(" Status - Ativo")
-						else
-							print(" Status - Inativo")
-						end
-						if(livros[i].categoria == categorias[1]) then
-							if(livros[i].ilustracoes == true) then
-								print(" Ilustracoes - Sim \n")
-							else
-								print(" Ilustracoes - Nao \n")
-							end
-						else
-							if(livros[i].categoria == categorias[2]) then
-								if(livros[i].capaDura == true) then
-									print(" Capa Dura - Sim \n")
-								else
-									print(" Capa Dura - Nao \n")
-								end
-							else
-								if(livros[i].categoria == categorias[3]) then
-									if(livros[i].capaBrochura == true) then
-										print(" Capa Brochura - Sim \n")
-									else
-										print(" Capa Brochura - Nao \n")
-									end
-								end
-							end
-
-						end
-
-				end
+				printLivros()
 
 			else
 
 				if(opcao == "3") then
 
-					for j = 1, 3, 1 do
-
-						print("\t Categoria: " .. categorias[j])
-
-						for i = 1, #livros, 1 do
-
-
-
-							if(livros[i].categoria == categorias[j] ) then
-
-								print("\t \n Livro - ".. livros[i].id)
-								print(" Id - " .. livros[i].id)
-								print(" Titulo - " .. livros[i].titulo)
-								print(" Valor - " .. livros[i].valor)
-
-								print(" Quantidade Em Estoque - " .. livros[i].quantidade)
-								if(livros[i].status == true) then
-									print(" Status - Ativo")
-								else
-									print(" Status - Inativo")
-								end
-
-								if(livros[i].categoria == categorias[1]) then
-									if(livros[i].ilustracoes == true) then
-										print(" Ilustracoes - Sim \n")
-									else
-										print(" Ilustracoes - Nao \n")
-									end
-								else
-									if(livros[i].categoria == categorias[2]) then
-
-										if(livros[i].capaDura == true) then
-											print(" Capa Dura - Sim \n")
-										else
-											print(" Capa Dura - Nao \n")
-										end
-
-									else
-										if(livros[i].categoria == categorias[3]) then
-											if(livros[i].capaBrochura == true) then
-												print(" Capa Brochura - Sim \n")
-											else
-												print(" Capa Brochura - Nao \n")
-											end
-										end
-									end
-								end
-							end
-						end
-					end
+					visualizarPorCategoria()
 
 				else
 
 					if(opcao == "4") then
-						print("\n Digite o id do livro desejado:")
-						idLivro = tonumber(io.read())
-						if(idLivro <= #livros and idLivro > 0) then
 
-							if(livros[idLivro].status == true) then
-
-								if(livros[idLivro].quantidade == 0) then
-									print("\n Livro Esgotado")
-								else
-									livros[idLivro].quantidade = livros[idLivro].quantidade -1
-									print("\n Venda Realizada com Sucesso")
-								end
-
-							else
-
-								print("\n Livro Indisponível para a venda.")
-
-							end
-
-
-						else
-							print("\n Livro não encontrado. Id inválido.")
-						end
+						venderLivro()
 
 					else
 
 						if(opcao == "5") then
 
-							print("\n Digite o id do livro desejado:\n")
-							idLivro = tonumber(io.read())
 
-							if(idLivro <= #livros and idLivro > 0) then
-
-								if(livros[idLivro].status == true) then
-
-									livros[idLivro].status = false
-									print("\n Livro esta Indisponível para venda. Inativo")
-
-								else
-
-									print("\n Livro ja esta inativo.")
-
-								end
-
-
-							else
-								print("\n Livro não encontrado. Id inválido.")
-							end
+							desativarVendasLivro()
 
 						else
 
 							if(opcao == "6") then
 
-								print("\n Digite o id do livro desejado:")
-								idLivro = tonumber(io.read())
-
-								if(idLivro <= #livros and idLivro > 0) then
-
-									if(livros[idLivro].status == false) then
-
-										livros[idLivro].status = true
-										print("\n Livro esta disponível para venda. Ativo")
-
-									else
-
-										print("\n Livro ja esta ativo.")
-
-									end
-
-
-								else
-									print("\n Livro não encontrado. Id inválido.")
-								end
+								ativarVendasLivro()
 
 							else
 
 								if(opcao == "7") then
-
-									print("\n Digite o id do livro desejado:")
-									idLivro = tonumber(io.read())
-
-									if(idLivro <= #livros and idLivro > 0) then
-
-										print("\n Digite a quantidade de volumes a ser adicionada:")
-										qtdLivro = tonumber(io.read())
-
-										if(qtdLivro > 0) then
-											livros[idLivro].quantidade = livros[idLivro].quantidade + qtdLivro
-											print("\n Volumes adicionados com sucesso.")
-										else
-											print("\n Quantidade invalida.")
-										end
-
-
-									else
-										print("\n Livro não encontrado. Id inválido.")
-									end
+									adicionarMaisVolumes()
 
 								else
 
@@ -318,8 +339,6 @@ repeat
 			end
 
 		end
-
-
 
 
 until sair == true
