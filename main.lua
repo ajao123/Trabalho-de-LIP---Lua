@@ -1,323 +1,63 @@
 local livroAventura = require("entities/livroAventura")
 local livroDrama = require("entities/livroDrama")
 local livroComedia = require("entities/livroComedia")
+local gerenciador = require("entities/gerenciador")
 
 
 sair = false
 
-livros = {}
-categorias = {"aventura", "drama", "comedia"}
-
-function printLivro(livro)
-	print("\t Livro - " .. livro.id)
-	print(" Id - " .. livro.id)
-	print(" Titulo - " .. livro.titulo)
-	print(" Categoria - " .. livro.categoria)
-	print(" Valor - " .. livro.valor)
-	print(" Quantidade Em Estoque - " .. livro.quantidade)
-
-	if(livro.status == true) then
-		print(" Status - Ativo")
-	else
-		print(" Status - Inativo")
-	end
-
-	if(livro.categoria == categorias[1]) then
-		if(livro.ilustracoes == true) then
-			print(" Ilustracoes - Sim \n")
-		else
-			print(" Ilustracoes - Nao \n")
-		end
-	else
-		if(livro.categoria == categorias[2]) then
-			if(livro.capaDura == true) then
-				print(" Capa Dura - Sim \n")
-			else
-				print(" Capa Dura - Nao \n")
-			end
-		else
-			if(livro.categoria == categorias[3]) then
-				if(livro.capaBrochura == true) then
-					print(" Capa Brochura - Sim \n")
-				else
-					print(" Capa Brochura - Nao \n")
-				end
-			end
-		end
-
-	end
-end
-
-
-function printLivros()
-
-	for i = 1, #livros, 1 do
-		printLivro(livros[i])
-	end
-
-end
-
-
-function printMenu()
-	print("\n \n \n 1 - Adicionar Livro")
-	print(" 2 - Visualizar Livros")
-	print(" 3 - Visualizar Estoque de livros")
-	print(" 4 - Vender Livro")
-	print(" 5 - Desativar vendas do livro")
-	print(" 6 - Ativar vendas do livro")
-	print(" 7 - Adicionar mais volumes de um livro")
-	print(" 8 - Sair do Sistema\n")
-end
-
-
-function addLivro()
-
-		print("\n 1 - Adicionar Livro de Aventura")
-		print(" 2 - Adicionar Livro de Drama")
-		print(" 3 - Adicionar Livro de Comédia\n")
-
-		opcao = io.read()
-
-			print("\n Digite o titulo do livro:")
-
-				titulo = io.read()
-
-			print("\n Digite o valor do livro:")
-
-				valor = io.read()
-
-			print("\n Digite a quantidade de volumes do livro adicionado:")
-
-				quantidade = io.read()
-
-
-		if(opcao == "1") then
-
-			categoria =  categorias[1]
-
-			print("\n Ilustracoes ? s ou n:")
-
-				ilustracoes = io.read()
-
-				if(ilustracoes == "s") then
-					ilustracoes = true
-				else
-					ilustracoes = false
-				end
-
-			livros[#livros+1] = livroAventura.novo(categoria, #livros+1, titulo, valor, tonumber(quantidade), ilustracoes, true)
-		end
-
-		if(opcao == "2") then
-
-			categoria =  categorias[2]
-
-
-			print("\n Capa dura ? s ou n:")
-
-				capaDura = io.read()
-
-				if(capaDura == "s") then
-					capaDura = true
-				else
-					capaDura = false
-				end
-
-			livros[#livros+1] = livroDrama.novo(categoria, #livros+1, titulo, valor, tonumber(quantidade), capaDura, true)
-
-		end
-
-		if(opcao == "3") then
-
-			categoria = categorias[3]
-
-			print("\n Capa Brochura ? s ou n:")
-
-				capaDura = io.read()
-
-				if(capaDura == "s") then
-					capaBrochura = true
-				else
-					capaBrochura = false
-				end
-
-			livros[#livros+1] = livroComedia.novo(categoria, #livros+1, titulo, valor, tonumber(quantidade), capaBrochura, true)
-
-		end
-
-end
-
-
-function visualizarPorCategoria()
-	for j = 1, 3, 1 do
-		print("\t Categoria: " .. categorias[j] .. "\n")
-
-		for i = 1, #livros, 1 do
-
-			if(livros[i].categoria == categorias[j] ) then
-
-				printLivro(livros[i])
-
-			end
-		end
-	end
-end
-
-
-
-function venderLivro()
-
-	print("\n Digite o id do livro desejado:")
-
-	idLivro = tonumber(io.read())
-
-	if(idLivro <= #livros and idLivro > 0) then
-
-		if(livros[idLivro].status == true) then
-
-			if(livros[idLivro].quantidade == 0) then
-				print("\n Livro Esgotado")
-			else
-				livros[idLivro].quantidade = livros[idLivro].quantidade -1
-				print("\n Venda Realizada com Sucesso")
-			end
-
-		else
-
-			print("\n Livro Indisponível para a venda.")
-
-		end
-
-
-	else
-		print("\n Livro não encontrado. Id inválido.")
-	end
-
-end
-
-
-function desativarVendasLivro()
-
-	print("\n Digite o id do livro desejado:\n")
-	idLivro = tonumber(io.read())
-
-	if(idLivro <= #livros and idLivro > 0) then
-
-		if(livros[idLivro].status == true) then
-
-			livros[idLivro].status = false
-			print("\n Livro esta Indisponível para venda. Inativo")
-
-		else
-
-			print("\n Livro ja esta inativo.")
-
-		end
-
-
-	else
-		print("\n Livro não encontrado. Id inválido.")
-	end
-
-end
-
-
-
-function ativarVendasLivro()
-
-	print("\n Digite o id do livro desejado:")
-	idLivro = tonumber(io.read())
-
-	if(idLivro <= #livros and idLivro > 0) then
-
-		if(livros[idLivro].status == false) then
-
-			livros[idLivro].status = true
-			print("\n Livro esta disponível para venda. Ativo")
-
-		else
-
-			print("\n Livro ja esta ativo.")
-
-		end
-
-
-	else
-		print("\n Livro não encontrado. Id inválido.")
-	end
-
-end
-
-
-function adicionarMaisVolumes()
-print("\n Digite o id do livro desejado:")
-	idLivro = tonumber(io.read())
-
-	if(idLivro <= #livros and idLivro > 0) then
-
-		print("\n Digite a quantidade de volumes a ser adicionada:")
-		qtdLivro = tonumber(io.read())
-
-		if(qtdLivro > 0) then
-			livros[idLivro].quantidade = livros[idLivro].quantidade + qtdLivro
-			print("\n Volumes adicionados com sucesso.")
-		else
-			print("\n Quantidade invalida.")
-		end
-
-
-	else
-		print("\n Livro não encontrado. Id inválido.")
-	end
-end
-
+gerenciador.printMenu()
 
 repeat
 
-	printMenu()
-
+	print(" 9 - Para visualizar o menu novamente \n")
 	opcao = io.read()
 
+	if(opcao == "9") then
 
-	if(opcao == "1") then
-
-		addLivro()
+		gerenciador.printMenu()
 
 	else
 
+		if(opcao == "1") then
+
+			gerenciador.addLivro()
+
+		else
+
 			if(opcao == "2") then
 
-				printLivros()
+				gerenciador.printLivros()
 
 			else
 
 				if(opcao == "3") then
 
-					visualizarPorCategoria()
+					gerenciador.visualizarPorCategoria()
 
 				else
 
 					if(opcao == "4") then
 
-						venderLivro()
+						gerenciador.venderLivro()
 
 					else
 
 						if(opcao == "5") then
 
 
-							desativarVendasLivro()
+							gerenciador.desativarVendasLivro()
 
 						else
 
 							if(opcao == "6") then
 
-								ativarVendasLivro()
+								gerenciador.ativarVendasLivro()
 
 							else
 
 								if(opcao == "7") then
-									adicionarMaisVolumes()
+									gerenciador.adicionarMaisVolumes()
 
 								else
 
@@ -340,8 +80,6 @@ repeat
 
 		end
 
+	end
 
 until sair == true
-
-
-
